@@ -1,12 +1,24 @@
 package com.dylan.chinese.pinyin.util;
 
+import java.io.File;
+
 import net.sf.json.JSONObject;
 
 import com.dylan.chinese.pinyin.dict.ResourceTool;
 
 public class Utils {
+	private static class UtilsHolder{
+		private  static final Utils INSTANCE = new Utils();
+	}
+	private Utils(){
+		
+	}
+	public static final Utils getInstance(){
+		return UtilsHolder.INSTANCE;
+	}
 	private ResourceTool resourceTool=ResourceTool.getInstance();
 	
+	/*ToDo  : Can't use*/
 	public boolean hasHanZi(String inputSource){
 		int source_length = inputSource.length();
 		char temp='0';
@@ -23,6 +35,7 @@ public class Utils {
 		pinYin=null;
 		return has;
 	}
+	/*ToDo  : Can't use*/
 	public String findPinYinWithHanZi(String inputSource){
 			int source_length = inputSource.length();
 			hasHanZi(inputSource);
@@ -35,5 +48,11 @@ public class Utils {
 			}
 			tempString=null;
 			return sb.toString();
+	}
+	
+	public <T> String getPackagePath(Class<T> classPath){
+		String path = classPath.getPackage().getName();
+		path=path.replace(".", File.separator);
+		return path;
 	}
 }

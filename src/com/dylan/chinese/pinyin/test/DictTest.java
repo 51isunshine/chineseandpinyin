@@ -2,6 +2,7 @@ package com.dylan.chinese.pinyin.test;
 
 import net.sf.json.JSONObject;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.dylan.chinese.pinyin.dict.ResourceConfig;
@@ -12,12 +13,14 @@ import com.dylan.chinese.pinyin.util.Utils;
 public class DictTest {
 	ResourceConfig dHelp = ResourceTool.getInstance();
 	 ResourceTool resourceTool=ResourceTool.getInstance();
-	Utils utils= new Utils();
+	Utils utils= Utils.getInstance();
 	@Test public void loadResource(){
 		//System.out.println(dHelp.loadAllDataOfSoundMark());
 		System.out.println(dHelp.loadResource(ResourceType.LOADPINYINMAP));
 	}
 	@Test
+	@Deprecated
+	@Ignore
 	public void findPinYinWithHanZi(){
 		System.out.println(utils.findPinYinWithHanZi("祖國"));
 	}
