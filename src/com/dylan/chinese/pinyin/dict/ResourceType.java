@@ -17,12 +17,16 @@ public  enum ResourceType {
 	}
 	public static enum OutPutStyle{
 		/* Without Tone*/
-		NORMAL("NORMAL"),
+		NOTHING("NOTHING"),
 		/* With Tone */
-		STANDARD("STANDARD"),
-		/* Without Number */
-		NUMBER("STANDARD"),
+		WITHTONE("WITHTONE"),
+		/* With Number */
+		NUMBER("NUMBER"),
 		/* Reset Statement */
+		/* SHENGMU */
+		SHENGMU("SHENGMU"),
+		/* YUNMU */
+		YUNMU("YUNMU"),
 		RESET("RESET");
 		private String typeString = null;
 
