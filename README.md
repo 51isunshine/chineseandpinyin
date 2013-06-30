@@ -30,6 +30,6 @@ We work on the develop branch.
 @author dylan.zhang (Dylan.zhangzhi@gmail.com)
 
 Reference:
-拼音库，来源于[在线汉语字典](http://zi.artx.cn/zi/)(http://zi.artx.cn/zi/);
+拼音库来源于[在线汉语字典](http://zi.artx.cn/zi/)(http://zi.artx.cn/zi/);
 
 Thanks Google,Thanks <hotoo.cn[AT]gmail.com>,Thanks http://zi.artx.cn/zi/, Thanks the guy who will join me!
