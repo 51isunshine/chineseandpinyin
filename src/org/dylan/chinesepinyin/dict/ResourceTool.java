@@ -108,7 +108,12 @@ public class ResourceTool extends ResourceConfig {
 	 */
 	public String findSimplyPinYinWithHanZi(String inputSource,
 			ResourceType.OutPutStyle styles) {
-
+//		try {
+//			inputSource= new String(inputSource.getBytes("UTF-8"));
+//		} catch (UnsupportedEncodingException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		int length = inputSource.length();
 
 		StringBuilder sb = new StringBuilder();

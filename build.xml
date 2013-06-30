@@ -1,5 +1,5 @@
 
-<project name="chinesepinyin" basedir="." default="javadoc">
+<project name="chinesepinyin-V1.0.0" basedir="." default="javadoc">
 
 	<property name="classes.dir" value="bin" />
 

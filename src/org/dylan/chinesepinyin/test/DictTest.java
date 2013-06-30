@@ -1,5 +1,7 @@
 package org.dylan.chinesepinyin.test;
 
+import java.io.UnsupportedEncodingException;
+
 import org.dylan.chinesepinyin.dict.ResourceConfig;
 import org.dylan.chinesepinyin.dict.ResourceTool;
 import org.dylan.chinesepinyin.dict.ResourceType;
@@ -32,9 +34,20 @@ public class DictTest {
 	public void getPinYinMap(){
 		resourceTool.getPinYinMap();	
 	}
-	@Test public void findSimplyPinYinWithHanZi(){
-		System.out.println(resourceTool.findSimplyPinYinWithHanZi("祖國",null));
-		System.out.println(resourceTool.findSimplyPinYinWithHanZi("祖國,hello World",ResourceType.OutPutStyle.YUNMU));
+	@Test public void findSimplyPinYinWithHanZi() throws UnsupportedEncodingException{
+		System.out.println(resourceTool.findSimplyPinYinWithHanZi("祖國",ResourceType.OutPutStyle.YUNMU));
+		System.out.println(resourceTool.findSimplyPinYinWithHanZi("天 朝,hello World",null));
+		System.out.println(resourceTool.findSimplyPinYinWithHanZi("今天天气真心不错！ Happy!",ResourceType.OutPutStyle.NOTHING));
+		System.out.println(resourceTool.findSimplyPinYinWithHanZi("今天天气真心不错！ Happy!",ResourceType.OutPutStyle.SHENGMU));
+		System.out.println(resourceTool.findSimplyPinYinWithHanZi("情绪是条河流！",ResourceType.OutPutStyle.WITHTONE));
+		System.out.println(resourceTool.findSimplyPinYinWithHanZi("12345，上山打老虎！",ResourceType.OutPutStyle.NUMBER));
+		
+		/**
+		 * Don't do this: new String("天 朝,hello World".getBytes("utf-8"));
+		 * it will output "chan ?lian ?hello World" not "tian  zhao ,hello World";
+		 * 
+		 * Please see @{code : loadResource}
+		 */
 	}
 	@Test public void handleType(){
 		System.out.println("helloworld,guo".replaceAll("[0-9]", ""));
