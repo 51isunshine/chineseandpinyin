@@ -30,6 +30,7 @@ public class NumberTest {
 	}
 	<T extends Number> void test(T	num){
 	
+	@SuppressWarnings("unchecked")
 	List<T> list = new ArrayList<T>((Collection<? extends T>) Arrays.asList(1,32.4,54,23,45,2));
 		Collections.sort(list, new Comparator<T>() {
 

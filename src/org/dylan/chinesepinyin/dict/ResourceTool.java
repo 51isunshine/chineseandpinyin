@@ -18,22 +18,29 @@
  */
 package org.dylan.chinesepinyin.dict;
 
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Set;
-
-import org.dylan.chinesepinyin.util.ChinesePinYinException;
 
 import net.sf.json.JSONObject;
 
+import org.dylan.chinesepinyin.test.DictTest;
+import org.dylan.chinesepinyin.util.ChinesePinYinException;
+
 /**
  * Extends {@code ResourceConfig}
+ * 
  * @author dylan.zhang (Dylan.zhangzhi@gmail.com)
- *
+ * 
  */
 public class ResourceTool extends ResourceConfig {
-	private final JSONObject pinYinJsonObject = getPinYinMap();
-	private final JSONObject soundMarkJsonObject = getSoundMark();
+	private final JSONObject pinYinJsonObject = getPinYinSource();
+	private final JSONObject soundMarkJsonObject = getSoundMarkSource();
 	private final String[] SHENGMU = super.SHENGMU.split(",");
-	//private final String[] YUNMU = super.YUNMU.split(",");
+
+	// private final String[] YUNMU = super.YUNMU.split(",");
 
 	private static class ResourceToolHolder {
 		private static final ResourceTool INSTANCE = new ResourceTool();
@@ -48,10 +55,11 @@ public class ResourceTool extends ResourceConfig {
 
 	/**
 	 * Encapsulation pinyin_dict_map.js
+	 * 
 	 * @return JSONObject
 	 */
 	@Override
-	public JSONObject getPinYinMap() {
+	public JSONObject getPinYinSource() {
 		String pinYin = super.loadResource(ResourceType.LOADPINYINMAP);
 		if (pinYin.equals(ResourceType.LOADRESOURCEFAIL.name())) {
 			throw new ChinesePinYinException(
@@ -63,12 +71,13 @@ public class ResourceTool extends ResourceConfig {
 	}
 
 	/**
-	 *
+	 * 
 	 * Encapsulation sound_mark.js
+	 * 
 	 * @return JSONObject
 	 */
 	@Override
-	public JSONObject getSoundMark() {
+	public JSONObject getSoundMarkSource() {
 		String soundMark = super.loadResource(ResourceType.LOADSOUNMARK);
 		if (soundMark.equals(ResourceType.LOADRESOURCEFAIL.name())) {
 			throw new ChinesePinYinException(
@@ -81,6 +90,7 @@ public class ResourceTool extends ResourceConfig {
 
 	/**
 	 * Get the Key-Set
+	 * 
 	 * @param resourceType
 	 * @return the Key-Set
 	 */
@@ -88,10 +98,10 @@ public class ResourceTool extends ResourceConfig {
 		JSONObject jsonObject = null;
 		switch (resourceType) {
 		case LOADPINYINMAP:
-			jsonObject = getPinYinMap();
+			jsonObject = getPinYinSource();
 			break;
 		case LOADSOUNMARK:
-			jsonObject = getSoundMark();
+			jsonObject = getSoundMarkSource();
 			break;
 		default:
 			throw new ChinesePinYinException("Nonsupport 'ResourceType !'");
@@ -100,20 +110,15 @@ public class ResourceTool extends ResourceConfig {
 	}
 
 	/**
-	 * Most of time,please use this method; 
-	 * More details information please see {@link DictTest}
+	 * Most of time,please use this method; More details information please see
+	 * {@link DictTest}
+	 * 
 	 * @param inputSource
 	 * @param styles
-	 * @return 
+	 * @return
 	 */
-	public String findSimplyPinYinWithHanZi(String inputSource,
+	public String findSingtonPinYinByHanZi(String inputSource,
 			ResourceType.OutPutStyle styles) {
-//		try {
-//			inputSource= new String(inputSource.getBytes("UTF-8"));
-//		} catch (UnsupportedEncodingException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
 		int length = inputSource.length();
 
 		StringBuilder sb = new StringBuilder();
@@ -136,11 +141,298 @@ public class ResourceTool extends ResourceConfig {
 	}
 
 	/**
+	 * Input 'Conllection<String>' type parameter,output 'String' data<br/>
+	 * 
+	 * <pre>
+	 * String[] arr1 = { &quot;张三&quot;, &quot;李四&quot;, &quot;王二&quot;, &quot;麻子&quot;, &quot;Android&quot;, &quot;10086&quot;, &quot;@%&tilde;*&amp;&circ;#$&quot;,
+	 * 		&quot;hello world&quot;, &quot;怡情&quot; };
+	 * List&lt;String&gt; list = Arrays.asList(arr1);
+	 * System.out.println(resourceTool.toStringWith(list)); <br/>Output:<p>张三李四王二麻子Android10086@%~*&^#$hello world怡情</p>
+	 * </pre>
+	 * 
+	 * @param source
+	 *            :
+	 * @return String
+	 */
+	public String toStringWith(Collection<String> source) {
+		StringBuilder sb = new StringBuilder();
+		Iterator<String> iterator = source.iterator();
+		while (iterator.hasNext()) {
+			sb.append(iterator.next());
+		}
+		return sb.toString();
+	}
+
+	/**
+	 * Input 'String[] ' type parameter,output 'String' data
+	 * 
+	 * <pre>
+	 * String[] arr1 = { &quot;张三&quot;, &quot;李四&quot;, &quot;王二&quot;, &quot;麻子&quot;, &quot;Android&quot;, &quot;10086&quot;, &quot;@%&tilde;*&amp;&circ;#$&quot;,
+	 * 		&quot;hello world&quot;, &quot;怡情&quot; };
+	 * System.out.println(resourceTool.toStringWith(arr1)); <br/>Output:<p>张三李四王二麻子Android10086@%~*&^#$hello world怡情</p>
+	 * </pre>
+	 * 
+	 * @param source
+	 * @return
+	 */
+	public String toStringWith(String[] source) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0, length = source.length; i < length; i++) {
+			sb.append(source[i]);
+		}
+		return sb.toString();
+	}
+
+	/**
+	 * Input 'String' type parameter,Formatted output 'String' data
+	 * 
+	 * <pre>
+	 * String str1="今天天气真心不错！ Happy!";
+	 * System.out.println(resourceTool.toStringWith(str1,"_"));<br />
+	 * Output:今_天_天_气_真_心_不_错_！_H_a_p_p_y_!
+	 * </pre>
+	 * 
+	 * More information,please @see {@code DictTest}
+	 * 
+	 * @param source
+	 * @param format
+	 *            : Any value and format also can equals null
+	 * @return
+	 */
+	public String toStringWith(String source, String format) {
+		if (format == null) {
+			format = "";
+		}
+		StringBuilder sb = new StringBuilder();
+		String temp = "";
+		for (int i = 0, length = source.length(); i < length; i++) {
+			temp = source.substring(i, i + 1);
+			sb.append(temp.trim());
+			if (!temp.matches("\\s*")) {
+				if (!(i == length - 1)) {
+					sb.append(format);
+				}
+			}
+
+		}
+		source = null;
+		return sb.toString();
+	}
+
+	/**
+	 * Given a hanzi to find pinyin.Eg: '张' ：default return zhang ,besides after
+	 * set ResourceType.OutPutStyle But if c="c" that will return "null".Because
+	 * 'c' is not hanzi!
+	 * 
+	 * @param c
+	 *            : char type
+	 * @param styles
+	 *            : ResourceType.OutPutStyle type
+	 * @return
+	 */
+	public String[] toPinYinWithStringArray(char c,
+			ResourceType.OutPutStyle styles) {
+		String cString = String.valueOf(c);
+		return toPinYinWithStringArray(cString, styles);
+	}
+
+	/**
+	 * {@code toPinYinWithStringArray}
+	 * 
+	 * @param c
+	 * @param styles
+	 * @return
+	 */
+	private String[] toPinYinWithStringArray(String c,
+			ResourceType.OutPutStyle styles) {
+		if (styles == null) {
+			styles = ResourceType.OutPutStyle.NOTHING;
+		}
+		if (pinYinJsonObject.containsKey(c)) {
+			String[] type = pinYinJsonObject.getString(c).split(",");
+			for (int i = 0, length = type.length; i < length; i++) {
+				type[i] = handleType(type[i], styles);
+			}
+			return type;
+		}
+		return new String[] { "null" };
+	}
+
+	private String[] toPinYinWithStringArray(String c) {
+		if (pinYinJsonObject.containsKey(c)) {
+			String[] type = pinYinJsonObject.getString(c).split(",");
+			for (int i = 0, length = type.length; i < length; i++) {
+				type[i] = handleType(type[i], ResourceType.OutPutStyle.NOTHING);
+			}
+			return type;
+		}
+		return new String[] { "null" };
+	}
+
+	/**
+	 * Given a hanzi to find pinyin.Eg: '张' ： return zhang But if c="c" that
+	 * will return "null".Because 'c' is not hanzi!
+	 * 
+	 * @see {@code toPinYinWithStringArray}
+	 * @param c
+	 *            : char type
+	 * @param styles
+	 *            : ResourceType.OutPutStyle type
+	 * @return
+	 */
+	public String[] toPinYinWithStringArray(char c) {
+		String cString = String.valueOf(c);
+		return toPinYinWithStringArray(cString);
+	}
+
+	/**
+	 * Invoke this method we can get a key-value
+	 * 
+	 * <pre>
+	 *  	key : Your Hanzi
+	 *  	value: PinYin ,Default output style is
+	 * {@code ResourceType.OutPutStyle.NOTHING}
+	 * 
+	 * <pre>
+	 * To save  duplicate,So the key is consist of hanzi and a serial number;
+	 * More information,please @see {@code DictTest}
+	 * @param c
+	 * @return
+	 */
+	public Map<String, String[]> toPinYinWithMap(String c) {
+		LinkedHashMap<String, String[]> map = new LinkedHashMap<>();
+		if (c.equals("") || c == null) {
+			map.put(null, new String[] { "null" });
+			return map;
+		}
+		String temp = c.trim();
+		for (int j = 0, length1 = temp.length(); j < length1; j++) {
+			String cc = temp.substring(j, j + 1);
+			if (pinYinJsonObject.containsKey(cc)) {
+				String[] type = pinYinJsonObject.getString(cc).split(",");
+				for (int i = 0, length = type.length; i < length; i++) {
+					type[i] = handleType(type[i],
+							ResourceType.OutPutStyle.NOTHING);
+				}
+				map.put(String.valueOf(j) + cc, type);
+			}
+		}
+		return map;
+	}
+
+	public Map<String, String[]> toPinYinWithMapMixModul(String c) {
+		LinkedHashMap<String, String[]> map = new LinkedHashMap<>();
+		if (c.equals("") || c == null) {
+			map.put(null, new String[] { "null" });
+			return map;
+		}
+		String temp = c.trim();
+		for (int j = 0, length1 = temp.length(); j < length1; j++) {
+			String cc = temp.substring(j, j + 1);
+			if (pinYinJsonObject.containsKey(cc)) {
+				String[] type = pinYinJsonObject.getString(cc).split(",");
+				for (int i = 0, length = type.length; i < length; i++) {
+					type[i] = handleType(type[i],
+							ResourceType.OutPutStyle.NOTHING);
+				}
+				map.put(String.valueOf(j) + cc, type);
+			}else{
+				map.put(String.valueOf(j) + cc, new String[]{cc});
+			}
+		}
+		return map;
+	}
+
+	/**
+	 * Invoke this method we can get a key-value
+	 * 
+	 * <pre>
+	 *  	key : Your Hanzi
+	 *  	value: PinYin , Output style is
+	 * {@code ResourceType.OutPutStyle}
+	 * 
+	 * <pre>
+	 * To save  duplicate,So the key is consist of hanzi and a serial number;
+	 * More information,please @see {@code DictTest}
+	 * 
+	 * @param c
+	 * @param style
+	 * @return A map
+	 */
+	public Map<String, String[]> toPinYinWithMap(String c,
+			ResourceType.OutPutStyle style) {
+		if (style == null) {
+			style = ResourceType.OutPutStyle.NOTHING;
+		}
+		LinkedHashMap<String, String[]> map = new LinkedHashMap<>();
+		if (c.equals("") || c == null) {
+			map.put(null, new String[] { "null" });
+			return map;
+		}
+		String temp = c.trim();
+		// if(utils.hasChinese(temp)){
+		// temp = utils.onlyChinese(temp);
+		// }
+		for (int j = 0, length1 = temp.length(); j < length1; j++) {
+			String cc = temp.substring(j, j + 1);
+			if (pinYinJsonObject.containsKey(cc)) {
+				String[] type = pinYinJsonObject.getString(cc).split(",");
+				for (int i = 0, length = type.length; i < length; i++) {
+					type[i] = handleType(type[i], style);
+				}
+				map.put(String.valueOf(j) + cc, type);
+			}
+		}
+		return map;
+	}
+
+	/**
+	 * The same as {@code toPinYinWithMap} except if invoke {@code toPinYinWithMapMixModul} it does not filter hanzi
+	 * Eg:
+	 * <pre>
+	 * 		String c = "hello world 张",Not only output 'zhang',in fact it will output:hello world zhang
+	 * </pre>
+	 * @param c
+	 * @param style
+	 * @return
+	 */
+	public Map<String, String[]> toPinYinWithMapMixModul(String c,
+			ResourceType.OutPutStyle style) {
+		if (style == null) {
+			style = ResourceType.OutPutStyle.NOTHING;
+		}
+		LinkedHashMap<String, String[]> map = new LinkedHashMap<>();
+		if (c.equals("") || c == null) {
+			map.put(null, new String[] { "null" });
+			return map;
+		}
+		String temp = c.trim();
+		// if(utils.hasChinese(temp)){
+		// temp = utils.onlyChinese(temp);
+		// }
+		for (int j = 0, length1 = temp.length(); j < length1; j++) {
+			String cc = temp.substring(j, j + 1);
+			if (pinYinJsonObject.containsKey(cc)) {
+				String[] type = pinYinJsonObject.getString(cc).split(",");
+				for (int i = 0, length = type.length; i < length; i++) {
+					type[i] = handleType(type[i], style);
+				}
+				map.put(String.valueOf(j) + cc, type);
+			}else{
+				map.put(String.valueOf(j) + cc, new String[]{cc});
+			}
+		}
+		return map;
+	}
+
+	/**
 	 * A help method for {@code findSimplyPinYinWithHanZi}
+	 * 
 	 * @param code
 	 * @param styles
 	 * @return
 	 */
+	@SuppressWarnings("incomplete-switch")
 	public String handleType(String code, ResourceType.OutPutStyle styles) {
 		StringBuilder sb = new StringBuilder();
 		String tone = null;

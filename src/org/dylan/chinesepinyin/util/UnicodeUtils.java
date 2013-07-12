@@ -22,32 +22,42 @@ import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.dylan.chinesepinyin.dict.ResourceTool;
+
+import net.sf.json.JSONObject;
+
 /**
  * String util class
  * 
  * @author dylan.zhang (Dylan.zhangzhi@gmail.com)
  * 
  */
-public class UnicodeUtils {
-	
-	private static class StringUtilHolder{
-		private  static final UnicodeUtils INSTANCE = new UnicodeUtils();
+@Deprecated class UnicodeUtils {
+	private ResourceTool resourceTool = ResourceTool.getInstance();
+
+	private static class StringUtilHolder {
+		private static final UnicodeUtils INSTANCE = new UnicodeUtils();
 	}
-	private UnicodeUtils(){
-		
+
+	private UnicodeUtils() {
+
 	}
-	public static final UnicodeUtils getInstance(){
+
+	public static final UnicodeUtils getInstance() {
 		return StringUtilHolder.INSTANCE;
 	}
+
 	/**
 	 * Have a default separator : \\u <br />
 	 * if the param not only include chinese hanzi,It will filter by defalut. <br />
 	 * For example
-	 * 	<pre>
-	 * String str="中国 福 建 厦门 ,Hello!!";
-	 * String hanZi=filterChinese(str);  //Just diplay "中国福建厦门"
-	 * 	</pre>
-	 * @param String 
+	 * 
+	 * <pre>
+	 * String str = &quot;中国 福 建 厦门 ,Hello!!&quot;;
+	 * String hanZi = filterChinese(str); // Just diplay &quot;中国福建厦门&quot;
+	 * </pre>
+	 * 
+	 * @param String
 	 * @return String
 	 */
 	public String hanZiToUnicode(String hanZi) {
@@ -61,141 +71,6 @@ public class UnicodeUtils {
 	}
 
 	/**
-	 * The same as {@code hanZiToUnicode},But does not have separator: \\u <br />
-	 *  For example: "我姓张" : input : 6211 59d 35f20
-	 * 
-	 * @see {@link http://www.chi2ko.com/tool/CJK.htm }  
-	 * @param String hanzi
-	 * @return String
-	 */
-	public String hanZiToUnicodeWithoutU(String hanZi) {
-		hanZi = onlyChinese(hanZi);
-		StringBuilder sb = new StringBuilder();
-		for (char c : hanZi.toCharArray()) {
-			sb.append(Integer.toHexString(c));
-		}
-		return sb.toString();
-	}
-
-	/**
-	 * hanZi to hex with separator <br />
-	 *
-	 * @param hanZi
-	 * @param separator
-	 * @return String
-	 */
-	public String[] hanZiToHex(String hanZi, SeparatorMode separator) {
-		hanZi = onlyChinese(hanZi);
-		separatorMode = separator;
-		separator=null;
-		StringBuilder sb = new StringBuilder();
-		for (char c : hanZi.toCharArray()) {
-			sb.append(separatorMode.getMode()).append(Integer.toHexString(c));
-		}
-		String[] str={sb.toString(),separatorMode.getMode()};
-		return str;
-	}
-	/**
-	 * Default separator is "\\u"
-	 * 
-	 * @param source
-	 * @param separator
-	 * @return String
-	 * @return String[]
-	 */
-	public String[] encodeWithSeparator(String source, SeparatorMode separator) {
-		StringBuilder sb = new StringBuilder();
-		if (separator == null)
-			separatorMode = SeparatorMode.UNICODEMODE;
-		else
-			separatorMode = separator;
-		separator=null;
-		source = source.trim();
-		for (int i = 0; i < source.length(); i++) {
-			sb.append(separatorMode.getMode()).append(
-					Integer.toHexString((int) source.charAt(i) & 0xffff));
-		}
-		String[] string = {sb.toString(),separatorMode.getMode()};
-		return string;
-	}
-	/**
-	 * Have a argrument without Separator <br />
-	 * 
-	 * @param source
-	 * @return String[]
-	 */
-	public String[] encodeWithOutSeparator(String source) {
-		source = source.trim();
-		String[] ss = new String[source.length()];
-		for (int i = 0; i < source.length(); i++) {
-			ss[i] = Integer.toHexString((int) source.charAt(i) & 0xffff);
-		}
-		source=null;
-		return ss;
-	}
-
-	/**
-	 * encode Mix Char : For example <br />
-	 * <pre >
-	 * String char="Test 测试 ！";
-	 * </pre>
-	 * @param String : source
-	 */
-	public char[] decodeFilterChineseWithOutSepa(String[] formEncode){
-		int temp = formEncode.length;
-		char[] ch = new char[temp];
-		int num=0;
-		for (int i = 0; i < temp; i++) {
-			num=Integer.parseInt(formEncode[i],16);
-			if(num>255){
-				//ch[i] = ((char) Integer.parseInt(formEncode[i], 16));
-				//ToDo
-			}else{
-				ch[i]=(char)num;
-			}			
-		}
-		return ch;
-	}
-	
-	/**
-	 * After invoke {@code encodeWithSeparator(String source, SeparatorMode separator)},please call this function !! <br />
-	 * @param formEncode
-	 * @param separator
-	 * @return char[]
-	 */
-	public char[] decodeWithSeparator(String formEncode,String separator) {
-		String split = "\\" + separator;
-		//System.out.println(split);
-		String[] flag = formEncode.trim().split(split);
-		int temp = flag.length;
-		char[] ch = new char[flag.length];
-		for (int i = 1; i < temp; i++) {
-			ch[i] = ((char) Integer.parseInt(flag[i], 16));
-		}
-		separator=null;
-		return ch;
-	}
-
-	/**
-	 * decode With Out Separator <br />
-	 * {@code encodeWithOutSeparator}
-	 * @param formEncode
-	 * @return char[]
-	 */
-	public char[] decodeWithOutSeparator(String[] formEncode) {
-		int temp = formEncode.length;
-		char[] ch = new char[temp];
-		for (int i = 0; i < temp; i++) {
-			ch[i] = ((char) Integer.parseInt(formEncode[i], 16));
-		}
-		return ch;
-	}
-
-	public String decode(char[] ch) {
-		return new String(ch);
-	}
-
-	/**
 	 * if a String include chinese character ,return true,otherwise return false
 	 * 
 	 * @param source
@@ -205,6 +80,15 @@ public class UnicodeUtils {
 		return source.getBytes().length == source.length() ? false : true;
 	}
 
+	/**
+	 * The same as {@code hanZiToUnicode},But does not have separator: \\u <br />
+	 * For example: "我姓张" : input : 6211 59d 35f20
+	 * 
+	 * @see {@link http://www.chi2ko.com/tool/CJK.htm }
+	 * @param String
+	 *            hanzi
+	 * @return String
+	 */
 	/**
 	 * filterChinese
 	 * 
@@ -224,9 +108,146 @@ public class UnicodeUtils {
 		return sb.toString().trim();
 	}
 
+	public String hanZiToUnicodeWithoutU(String hanZi) {
+		hanZi = onlyChinese(hanZi);
+		StringBuilder sb = new StringBuilder();
+		for (char c : hanZi.toCharArray()) {
+			sb.append(Integer.toHexString(c));
+		}
+		return sb.toString();
+	}
+
+	/**
+	 * hanZi to hex with separator <br />
+	 * 
+	 * @param hanZi
+	 * @param separator
+	 * @return String
+	 */
+	public String[] hanZiToHex(String hanZi, SeparatorMode separator) {
+		hanZi = onlyChinese(hanZi);
+		separatorMode = separator;
+		separator = null;
+		StringBuilder sb = new StringBuilder();
+		for (char c : hanZi.toCharArray()) {
+			sb.append(separatorMode.getMode()).append(Integer.toHexString(c));
+		}
+		String[] str = { sb.toString(), separatorMode.getMode() };
+		return str;
+	}
+
+	/**
+	 * Default separator is "\\u"
+	 * 
+	 * @param source
+	 * @param separator
+	 * @return String
+	 * @return String[]
+	 */
+	public String[] encodeWithSeparator(String source, SeparatorMode separator) {
+		StringBuilder sb = new StringBuilder();
+		if (separator == null)
+			separatorMode = SeparatorMode.UNICODEMODE;
+		else
+			separatorMode = separator;
+		separator = null;
+		source = source.trim();
+		for (int i = 0; i < source.length(); i++) {
+			sb.append(separatorMode.getMode()).append(
+					Integer.toHexString((int) source.charAt(i) & 0xffff));
+		}
+		String[] string = { sb.toString(), separatorMode.getMode() };
+		return string;
+	}
+
+	/**
+	 * Have a argrument without Separator <br />
+	 * 
+	 * @param source
+	 * @return String[]
+	 */
+	public String[] encodeWithOutSeparator(String source) {
+		source = source.trim();
+		String[] ss = new String[source.length()];
+		for (int i = 0; i < source.length(); i++) {
+			ss[i] = Integer.toHexString((int) source.charAt(i) & 0xffff);
+		}
+		source = null;
+		return ss;
+	}
+
+	/**
+	 * encode Mix Char : For example <br />
+	 * 
+	 * <pre >
+	 * String char="Test 测试 ！";
+	 * </pre>
+	 * 
+	 * @param String
+	 *            : source
+	 */
+	public char[] decodeFilterChineseWithOutSepa(String[] formEncode) {
+		int temp = formEncode.length;
+		char[] ch = new char[temp];
+		int num = 0;
+		for (int i = 0; i < temp; i++) {
+			num = Integer.parseInt(formEncode[i], 16);
+			if (num > 255) {
+				// ch[i] = ((char) Integer.parseInt(formEncode[i], 16));
+				// ToDo
+			} else {
+				ch[i] = (char) num;
+			}
+		}
+		return ch;
+	}
+
+	/**
+	 * After invoke
+	 * {@code encodeWithSeparator(String source, SeparatorMode separator)}
+	 * ,please call this function !! <br />
+	 * 
+	 * @param formEncode
+	 * @param separator
+	 * @return char[]
+	 */
+	public char[] decodeWithSeparator(String formEncode, String separator) {
+		String split = "\\" + separator;
+		// System.out.println(split);
+		String[] flag = formEncode.trim().split(split);
+		int temp = flag.length;
+		char[] ch = new char[flag.length];
+		for (int i = 1; i < temp; i++) {
+			ch[i] = ((char) Integer.parseInt(flag[i], 16));
+		}
+		separator = null;
+		return ch;
+	}
+
+	/**
+	 * decode With Out Separator <br />
+	 * {@code encodeWithOutSeparator}
+	 * 
+	 * @param formEncode
+	 * @return char[]
+	 */
+	public char[] decodeWithOutSeparator(String[] formEncode) {
+		int temp = formEncode.length;
+		char[] ch = new char[temp];
+		for (int i = 0; i < temp; i++) {
+			ch[i] = ((char) Integer.parseInt(formEncode[i], 16));
+		}
+		return ch;
+	}
+
+	public String decode(char[] ch) {
+		return new String(ch);
+	}
+
 	/**
 	 * encode character: include hanzi plese use {@code encodeToUnicodeWithOutU} <br />
 	 * Don't USE
+	 * 
 	 * @param source
 	 * @return
 	 */
@@ -293,10 +314,46 @@ public class UnicodeUtils {
 	}
 
 	private SeparatorMode separatorMode = null;
-	
-	public <T> String getPackagePath(Class<T> classPath){
+
+	public <T> String getPackagePath(Class<T> classPath) {
 		String path = classPath.getPackage().getName();
-		path=path.replace(".", File.separator);
+		path = path.replace(".", File.separator);
 		return path;
+	}
+
+	/* ToDo : Can't use */
+	@Deprecated
+	public boolean hasHanZi(String inputSource) {
+		int source_length = inputSource.length();
+		char temp = '0';
+		boolean has = false;
+		JSONObject pinYin = resourceTool.getPinYinSource();
+		for (int i = 0; i < source_length; i++) {
+			temp = inputSource.charAt(i);
+			has = pinYin.containsKey(temp);
+			if (!has) {
+				throw new ChinesePinYinException("Don't Support such word:"
+						+ temp);
+			}
+		}
+		has = true;
+		pinYin = null;
+		return has;
+	}
+
+	/* ToDo : Can't use */
+	@Deprecated
+	public String findPinYinWithHanZi(String inputSource) {
+		int source_length = inputSource.length();
+		hasHanZi(inputSource);
+		StringBuilder sb = new StringBuilder();
+		String tempString = null;
+		JSONObject pinYin = resourceTool.getPinYinSource();
+		for (int i = 0; i < source_length; i++) {
+			tempString = (String) pinYin.get(inputSource.charAt(i));
+			sb.append((tempString.split(",")[0])).append(" ");
+		}
+		tempString = null;
+		return sb.toString();
 	}
 }

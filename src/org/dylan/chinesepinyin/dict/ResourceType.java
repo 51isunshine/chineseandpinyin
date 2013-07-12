@@ -68,4 +68,5 @@ public  enum ResourceType {
 			return this.typeString;
 		}
 	}
+	
 }

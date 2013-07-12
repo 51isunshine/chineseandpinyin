@@ -35,7 +35,9 @@ import net.sf.json.JSONObject;
  */
 public abstract class ResourceConfig {
 	private final int BYTE_SIZE=1024;
+	/** An  constant for save "sound_mark.js "*/
 	protected final  String SOUND_MARK_PATH = "sound_mark.js";
+	/** An  constant for save "pinyin_dict_map.js "*/
 	protected final  String PINYIN_DICT_MAP = "pinyin_dict_map.js";
 	/**
 	 * SHENGMU's length= 23;
@@ -88,6 +90,6 @@ public abstract class ResourceConfig {
 
 	}
 
-	public abstract JSONObject getPinYinMap();
-	public abstract JSONObject getSoundMark();
+	public abstract JSONObject getPinYinSource();
+	public abstract JSONObject getSoundMarkSource();
 }

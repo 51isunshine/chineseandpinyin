@@ -18,6 +18,7 @@ public class ReferTest {
 }
 class Person{
 	private int id;
+	@SuppressWarnings("unused")
 	private String name;
 	public Person(int id,String name){
 		this.id=id;
