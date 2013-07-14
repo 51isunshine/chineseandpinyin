@@ -23,7 +23,7 @@ import org.junit.Test;
  * @author dylan.zhang (Dylan.zhangzhi@gmail.com)
  * 
  */
-public class DictTest {
+public class MainTest {
 	ResourceConfig dHelp = ResourceTool.getInstance();
 	ResourceTool resourceTool = ResourceTool.getInstance();
 	Utils utils = Utils.getInstance();
