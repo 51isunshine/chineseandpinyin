@@ -1,6 +1,8 @@
 chineseandpinyin
 ================
 
+I am happy that version 2.0.0 has release.
+
 Basic Introduction
 
 	1. First: install JDK 1.6.* or above
@@ -11,15 +13,15 @@ Now I am very happy that release the version 1.0.0; Following is the main functi
 
 	1. Get the pinyin of chinese.
 	2. There are five style about output format.
-	3. More information ,please see "DictTest.java" file.
+	3. Implement sort by pinyin.
+	4. More information ,please see "MainTest.java" file.
 
-Welcome to use and report bug, please download it. chinesepinyin-V1.0.0.jar
+Welcome to use and report bug, please download it. chinesepinyin-V2.0.0.jar
 	
 To-do-list:
 
-	1. The sort of chinese!
-	2. How to Segment the chinese!
-	3. Extends the chinese dictionary.
+	1. How to Segment the chinese!
+	2. Extends the chinese dictionary.
 
 If you are instrested in it ,please join us!
 
