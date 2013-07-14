@@ -300,7 +300,7 @@ public class ResourceTool extends ResourceConfig {
 	 * @return
 	 */
 	public Map<String, String[]> toPinYinWithMap(String c) {
-		LinkedHashMap<String, String[]> map = new LinkedHashMap<>();
+		LinkedHashMap<String, String[]> map = new LinkedHashMap<String, String[]>();
 		if (c.equals("") || c == null) {
 			map.put(null, new String[] { "null" });
 			return map;
@@ -321,7 +321,7 @@ public class ResourceTool extends ResourceConfig {
 	}
 
 	public Map<String, String[]> toPinYinWithMapMixModul(String c) {
-		LinkedHashMap<String, String[]> map = new LinkedHashMap<>();
+		LinkedHashMap<String, String[]> map = new LinkedHashMap<String, String[]>();
 		if (c.equals("") || c == null) {
 			map.put(null, new String[] { "null" });
 			return map;
@@ -364,7 +364,7 @@ public class ResourceTool extends ResourceConfig {
 		if (style == null) {
 			style = ResourceType.OutPutStyle.NOTHING;
 		}
-		LinkedHashMap<String, String[]> map = new LinkedHashMap<>();
+		LinkedHashMap<String, String[]> map = new LinkedHashMap<String, String[]>();
 		if (c.equals("") || c == null) {
 			map.put(null, new String[] { "null" });
 			return map;
@@ -401,7 +401,7 @@ public class ResourceTool extends ResourceConfig {
 		if (style == null) {
 			style = ResourceType.OutPutStyle.NOTHING;
 		}
-		LinkedHashMap<String, String[]> map = new LinkedHashMap<>();
+		LinkedHashMap<String, String[]> map = new LinkedHashMap<String, String[]>();
 		if (c.equals("") || c == null) {
 			map.put(null, new String[] { "null" });
 			return map;
