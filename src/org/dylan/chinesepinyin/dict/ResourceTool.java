@@ -28,6 +28,7 @@ import net.sf.json.JSONObject;
 
 import org.dylan.chinesepinyin.test.DictTest;
 import org.dylan.chinesepinyin.util.ChinesePinYinException;
+import org.dylan.chinesepinyin.util.Utils.PinYinStyles;
 
 /**
  * Extends {@code ResourceConfig}
@@ -53,6 +54,10 @@ public class ResourceTool extends ResourceConfig {
 		return ResourceToolHolder.INSTANCE;
 	}
 
+	private enum PinyinStyle {
+		POLYPHONE, SINGTON;
+	}
+	
 	/**
 	 * Encapsulation pinyin_dict_map.js
 	 * 
@@ -162,7 +167,17 @@ public class ResourceTool extends ResourceConfig {
 		}
 		return sb.toString();
 	}
-
+	public String toStringWith(Collection<String> source,String format) {
+		if (format == null) {
+			format = "";
+		}
+		StringBuilder sb = new StringBuilder();
+		Iterator<String> iterator = source.iterator();
+		while (iterator.hasNext()) {
+			sb.append(iterator.next()).append(format);
+		}
+		return sb.toString();
+	}
 	/**
 	 * Input 'String[] ' type parameter,output 'String' data
 	 * 
@@ -182,7 +197,17 @@ public class ResourceTool extends ResourceConfig {
 		}
 		return sb.toString();
 	}
-
+	public String toStringWith(String[] source,String format) {
+		if (format == null) {
+			format = "";
+		}
+		
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0, length = source.length; i < length; i++) {
+			sb.append(source[i]).append(format);
+		}
+		return sb.toString();
+	}
 	/**
 	 * Input 'String' type parameter,Formatted output 'String' data
 	 * 
@@ -224,6 +249,17 @@ public class ResourceTool extends ResourceConfig {
 	 * set ResourceType.OutPutStyle But if c="c" that will return "null".Because
 	 * 'c' is not hanzi!
 	 * 
+	 * <pre>
+	 * 	Support formatted output style and polyphone:
+	 * 			'会'：
+	 * 					1.hui 
+	 * 					2.kuai
+	 * 			'张'：
+	 * 					1.zhāng
+	 * 	return String[]
+	 * 	if it is not a hanzi ,it will return 'null'
+	 * </pre>
+	 * 
 	 * @param c
 	 *            : char type
 	 * @param styles
@@ -231,11 +267,24 @@ public class ResourceTool extends ResourceConfig {
 	 * @return
 	 */
 	public String[] toPinYinWithStringArray(char c,
-			ResourceType.OutPutStyle styles) {
+			ResourceType.OutPutStyle styles,PinYinStyles pinYinStyles) {
 		String cString = String.valueOf(c);
-		return toPinYinWithStringArray(cString, styles);
+		return toPinYinWithStringArray(cString, styles,PinyinStyle.POLYPHONE,pinYinStyles);
 	}
-
+	/**
+	 * If argument is a hanzi ,it will return an pinyin ;if not will return 'null' 
+	 * </br>
+	 * Note:</br>
+	 * 	This method not support POLYPHONE,but still support formated output style
+	 * @param c
+	 * @param styles
+	 * @return
+	 */
+	public String toPinYinWithString(char c,
+			ResourceType.OutPutStyle styles,PinYinStyles pinYinStyles) {
+		String cString = String.valueOf(c);
+		return toPinYinWithStringArray(cString, styles,PinyinStyle.SINGTON,pinYinStyles)[0];
+	}
 	/**
 	 * {@code toPinYinWithStringArray}
 	 * 
@@ -244,34 +293,80 @@ public class ResourceTool extends ResourceConfig {
 	 * @return
 	 */
 	private String[] toPinYinWithStringArray(String c,
-			ResourceType.OutPutStyle styles) {
+			ResourceType.OutPutStyle styles,PinyinStyle pinyinStyle,PinYinStyles pinYinStyles ) {
 		if (styles == null) {
 			styles = ResourceType.OutPutStyle.NOTHING;
 		}
 		if (pinYinJsonObject.containsKey(c)) {
 			String[] type = pinYinJsonObject.getString(c).split(",");
-			for (int i = 0, length = type.length; i < length; i++) {
-				type[i] = handleType(type[i], styles);
+			switch (pinyinStyle) {
+			case POLYPHONE:
+				for (int i = 0, length = type.length; i < length; i++) {
+					type[i] = handleType(type[i],styles);
+				}
+				return type;
+
+			case SINGTON:
+				String temp[] = { handleType(type[0],styles) };
+				return temp;
 			}
-			return type;
+
+		}
+		switch (pinYinStyles) {
+		case ONLYCHINEASE:
+			return new String[] { "null" };
+		case COMPLETE:
+			return new String[]{c};
 		}
 		return new String[] { "null" };
 	}
 
-	private String[] toPinYinWithStringArray(String c) {
+	private String[] toPinYinWithStringArray(String c, PinyinStyle pinyinStyle,PinYinStyles pinYinStyles) {
 		if (pinYinJsonObject.containsKey(c)) {
 			String[] type = pinYinJsonObject.getString(c).split(",");
-			for (int i = 0, length = type.length; i < length; i++) {
-				type[i] = handleType(type[i], ResourceType.OutPutStyle.NOTHING);
+			switch (pinyinStyle) {
+			case POLYPHONE:
+				for (int i = 0, length = type.length; i < length; i++) {
+					type[i] = handleType(type[i],ResourceType.OutPutStyle.NOTHING);
+				}
+				return type;
+
+			case SINGTON:
+				String temp[] = { handleType(type[0],ResourceType.OutPutStyle.NOTHING) };
+				return temp;
 			}
-			return type;
+
+		}
+		/**
+		 * 
+		 */
+		switch (pinYinStyles) {
+		case ONLYCHINEASE:
+			return new String[] { "null" };
+		case COMPLETE:
+			return new String[]{c};
 		}
 		return new String[] { "null" };
+		
 	}
 
 	/**
 	 * Given a hanzi to find pinyin.Eg: '张' ： return zhang But if c="c" that
 	 * will return "null".Because 'c' is not hanzi!
+	 * 
+	 * <pre>
+	 * 	Support polyphone:
+	 * 			'会'：
+	 * 					1.hui
+	 * 					2.kuai
+	 * 	return String[]
+	 *  if it is not a hanzi please see below code：
+	 *  ResourceTool resourceTool = ResourceTool.getInstance();
+	 *   resourceTool.toPinYinWithStringArray('a',Utils.PinYinStyles.ONLYCHINEASE)  ==> null 
+	 *   resourceTool.toPinYinWithStringArray('a',Utils.PinYinStyles.COMPLETE)  ==> a (itself)
+	 *   resourceTool.toPinYinWithStringArray('会',Utils.PinYinStyles.COMPLETE) ==> hui   kuai 
+	 *   resourceTool.toPinYinWithStringArray('会',Utils.PinYinStyles.ONLYCHINEASE) ==> hui   kuai 
+	 * </pre>
 	 * 
 	 * @see {@code toPinYinWithStringArray}
 	 * @param c
@@ -280,11 +375,25 @@ public class ResourceTool extends ResourceConfig {
 	 *            : ResourceType.OutPutStyle type
 	 * @return
 	 */
-	public String[] toPinYinWithStringArray(char c) {
+	public String[] toPinYinWithStringArray(char c,PinYinStyles pinYinStyles) {
 		String cString = String.valueOf(c);
-		return toPinYinWithStringArray(cString);
+		return toPinYinWithStringArray(cString,PinyinStyle.POLYPHONE,pinYinStyles);
 	}
-
+	/**
+	 * The same as {@code toPinYinWithStringArray},except return String type not Array.
+	 * If argument is a hanzi ,it will return an pinyin ;if not will return 'null' 
+	 * <br />
+	 * Note:<br />
+	 * 	This method not support POLYPHONE and not support formated output style.<br />
+	 * if want to formated output ,please invoke @see {@code toPinYinWithString(char c,
+			ResourceType.OutPutStyle styles)}
+	 * @param c
+	 * @return
+	 */
+	public String toPinYinWithString(char c,PinYinStyles pinYinStyles) {
+		String cString = String.valueOf(c);
+		return toPinYinWithStringArray(cString,PinyinStyle.SINGTON,pinYinStyles)[0];
+	}
 	/**
 	 * Invoke this method we can get a key-value
 	 * 
@@ -293,7 +402,7 @@ public class ResourceTool extends ResourceConfig {
 	 *  	value: PinYin ,Default output style is
 	 * {@code ResourceType.OutPutStyle.NOTHING}
 	 * 
-	 * <pre>
+	 * </pre>
 	 * To save  duplicate,So the key is consist of hanzi and a serial number;
 	 * More information,please @see {@code DictTest}
 	 * @param c
@@ -336,8 +445,8 @@ public class ResourceTool extends ResourceConfig {
 							ResourceType.OutPutStyle.NOTHING);
 				}
 				map.put(String.valueOf(j) + cc, type);
-			}else{
-				map.put(String.valueOf(j) + cc, new String[]{cc});
+			} else {
+				map.put(String.valueOf(j) + cc, new String[] { cc });
 			}
 		}
 		return map;
@@ -387,11 +496,13 @@ public class ResourceTool extends ResourceConfig {
 	}
 
 	/**
-	 * The same as {@code toPinYinWithMap} except if invoke {@code toPinYinWithMapMixModul} it does not filter hanzi
-	 * Eg:
+	 * The same as {@code toPinYinWithMap} except if invoke
+	 * {@code toPinYinWithMapMixModul} it does not filter hanzi Eg:
+	 * 
 	 * <pre>
 	 * 		String c = "hello world 张",Not only output 'zhang',in fact it will output:hello world zhang
 	 * </pre>
+	 * 
 	 * @param c
 	 * @param style
 	 * @return
@@ -418,8 +529,8 @@ public class ResourceTool extends ResourceConfig {
 					type[i] = handleType(type[i], style);
 				}
 				map.put(String.valueOf(j) + cc, type);
-			}else{
-				map.put(String.valueOf(j) + cc, new String[]{cc});
+			} else {
+				map.put(String.valueOf(j) + cc, new String[] { cc });
 			}
 		}
 		return map;

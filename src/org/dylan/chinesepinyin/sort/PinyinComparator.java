@@ -1,54 +1,42 @@
 package org.dylan.chinesepinyin.sort;
 
-
-
-import java.util.Arrays;
 import java.util.Comparator;
-
 import org.dylan.chinesepinyin.dict.ResourceTool;
-import org.dylan.chinesepinyin.dict.ResourceType;
-import org.junit.Test;
+import org.dylan.chinesepinyin.util.Utils;
 
-public class PinyinComparator implements Comparator<Object> {
+public class PinyinComparator implements Comparator<String> {
 	ResourceTool resourceTool = ResourceTool.getInstance();
-	String one[] = { "adb" };
-	String two[] = { "dkf" };
-
+	
 	@Override
-	public int compare(Object o1, Object o2) {
-
-		char c1 = ((String) o1).charAt(0);
-		char c2 = ((String) o2).charAt(0);
-		// System.out.println((String) o1+ " : "+(String) o2+ c1+c2);
-//		return concatPinyinStringArray(one).compareTo(
-//				concatPinyinStringArray(two));
-		String s1= ((String) o1);
-		String s2= ((String) o2);
-		return s1.compareTo(s2);
-	}
-
-	private String concatPinyinStringArray(String[] pinyinArray) {
-		StringBuffer pinyinSbf = new StringBuffer();
-		if ((pinyinArray != null) && (pinyinArray.length > 0)) {
-			for (int i = 0; i < pinyinArray.length; i++) {
-				pinyinSbf.append(pinyinArray[i]);
-			}
-		}
-		return pinyinSbf.toString();
+	public int compare(String str1, String str2) {
+		return comparator(str1, str2);
 	}
 	
-	
-	
-	@Test
-	public void sort() {
-		Comparator<Object> comparator = new PinyinComparator();
-		String str = "今天天气真心不错！ Happy!";
-		String[] arr = { "张三", "李四", "王二", "麻子", "Android", "10086",
-				"@%~*&^#$", "hello world", "怡情" };
-
-		System.out.println(resourceTool.toStringWith(arr));
-		//System.out.println(concatPinyinStringArray(arr));
-		Arrays.sort(arr,comparator);
-		System.out.println(resourceTool.toStringWith(arr));
+	private int comparator(String str1,String str2){
+		int len1=str1.length(),len2=str2.length(); 
+		 for (int i = 0; i < len1 && i < len2; i++) {
+	            int codePoint1 = str1.charAt(i);
+	            int codePoint2 = str2.charAt(i);
+	            if (Character.isSupplementaryCodePoint(codePoint1)
+	                    || Character.isSupplementaryCodePoint(codePoint2)) {
+	                i++;
+	            }
+	            if (codePoint1 != codePoint2) {
+	                if (Character.isSupplementaryCodePoint(codePoint1)
+	                        || Character.isSupplementaryCodePoint(codePoint2)) {
+	                    return codePoint1 - codePoint2;
+	                }
+	                String pinyin1 = resourceTool.toPinYinWithString((char) codePoint1,Utils.PinYinStyles.COMPLETE);
+	                String pinyin2 = resourceTool.toPinYinWithString((char) codePoint2,Utils.PinYinStyles.COMPLETE);
+	                if (pinyin1 != null && pinyin2 != null) { 
+	                    if (!pinyin1.equals(pinyin2)) {
+	                        return pinyin1.compareTo(pinyin2);
+	                    }
+	                } else {
+	                    return codePoint1 - codePoint2;
+	                }
+	            }
+	        }
+	        return len1 - len2;
 	}
 }

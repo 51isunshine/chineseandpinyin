@@ -39,7 +39,22 @@ public class Utils {
 		return UtilsHolder.INSTANCE;
 	}
 	
-	
+	public static enum PinYinStyles{
+		/**
+		 * Only Keep Chinese; eg:<br />
+		 * <pre>
+		 * 		"中国c" : Output : "中国null"
+		 * </pre>
+		 */
+		ONLYCHINEASE,
+		/**
+		 * Keep intact:; eg:<br />
+		 * <pre>
+		 * 		"中国china" : Output : "中国china"
+		 * </pre>
+		 */
+		COMPLETE;
+	}
 	
 	/**
 	 * Get the class packpage path

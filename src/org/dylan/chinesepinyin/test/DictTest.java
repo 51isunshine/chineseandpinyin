@@ -3,6 +3,8 @@ package org.dylan.chinesepinyin.test;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +13,7 @@ import java.util.Set;
 import org.dylan.chinesepinyin.dict.ResourceConfig;
 import org.dylan.chinesepinyin.dict.ResourceTool;
 import org.dylan.chinesepinyin.dict.ResourceType;
+import org.dylan.chinesepinyin.sort.PinyinComparator;
 import org.dylan.chinesepinyin.util.Utils;
 import org.junit.Test;
 
@@ -105,7 +108,60 @@ public class DictTest {
 		System.out.println(resourceTool.toStringWith(list)); 
 	}
 	@Test public void toPinYinWithStringArray(){
-		String[] arr1 = { "张三", "李四", "王二", "麻子", "Android", "10086", "@%~*&^#$", "hello world", "怡情" }; 
-		System.out.println(resourceTool.toPinYinWithStringArray('张')[0]);  
+		//String[] arr1 = { "张三", "李四", "王二", "麻子", "Android", "10086", "@%~*&^#$", "hello world", "怡情" }; 
+		System.out.println(resourceTool.toPinYinWithStringArray('会',Utils.PinYinStyles.COMPLETE)[1]);  
+		System.out.println(resourceTool.toPinYinWithString('@',ResourceType.OutPutStyle.WITHTONE,Utils.PinYinStyles.COMPLETE)); 
+		System.out.println(resourceTool.toPinYinWithString('会',ResourceType.OutPutStyle.WITHTONE,Utils.PinYinStyles.ONLYCHINEASE)); 
+		System.out.println(resourceTool.toPinYinWithString(' ',ResourceType.OutPutStyle.WITHTONE,Utils.PinYinStyles.COMPLETE)); 
+		System.out.println(resourceTool.toPinYinWithString('？',ResourceType.OutPutStyle.WITHTONE,Utils.PinYinStyles.ONLYCHINEASE)); 
+		/**
+		 * resourceTool.toPinYinWithStringArray('会',ResourceType.OutPutStyle.WITHTONE);
+		 * resourceTool.toPinYinWithStringArray('?');
+		 */
+		/**
+		 * resourceTool.toPinYinWithStringArray('a',Utils.PinYinStyles.ONLYCHINEASE)  ==> null
+		 * resourceTool.toPinYinWithStringArray('a',Utils.PinYinStyles.COMPLETE)  ==> a
+		 * resourceTool.toPinYinWithStringArray('会',Utils.PinYinStyles.COMPLETE) ==> hui   kuai 
+		 * resourceTool.toPinYinWithStringArray('会',Utils.PinYinStyles.ONLYCHINEASE) ==> hui   kuai 
+		 */
+		String[] array = resourceTool.toPinYinWithStringArray('会',Utils.PinYinStyles.ONLYCHINEASE);
+		for(String temp:array){
+			System.out.print(temp + "   ");
+		}
+	}
+	
+	@Test
+	public void arraySort() {
+		Comparator<String> comparator = new PinyinComparator();
+		String[] arr = { "张三", "a","1@","李四","1111111","abc" ,"王二","張三" ,"麻子", "Android", "10086",
+				"@%~*&^#$", "hello world", "A","张大","怡情" };
+		//System.out.println(resourceTool.toStringWith(arr));
+		//System.out.println(concatPinyinStringArray(arr));
+		Arrays.sort(arr,comparator);
+		//resourceTool.toStringWith(arr," , ");
+		System.out.println(resourceTool.toStringWith(arr," , "));
+		System.out.println(comparator.compare("b", "2"));
+		System.out.println(comparator.compare("張三", "李四"));
+		System.out.println(comparator.compare("w", "b"));
+		System.out.println(comparator.compare("2", "-1"));
+		
+	}
+
+	@Test public void listSort(){
+		Comparator<String> comparator = new PinyinComparator();
+		
+		String[] arr1 = { "张三", "a","1@","李四","1111111","abc" ,"王二","張三" ,"麻子", "Android", "10086",
+				"@%~*&^#$", "hello world", "A","张大","怡情" };
+		//System.out.println(resourceTool.toStringWith(arr));
+		//System.out.println(concatPinyinStringArray(arr));
+		List<String> arr=Arrays.asList(arr1);
+		Collections.sort(arr, comparator);
+		//Arrays.sort(arr,comparator);
+		//resourceTool.toStringWith(arr," , ");
+		System.out.println(resourceTool.toStringWith(arr," , "));
+		System.out.println(comparator.compare("b", "2"));
+		System.out.println(comparator.compare("張三", "李四"));
+		System.out.println(comparator.compare("w", "b"));
+		System.out.println(comparator.compare("2", "-1"));
 	}
 }
