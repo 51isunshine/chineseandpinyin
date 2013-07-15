@@ -2,6 +2,7 @@
 <html>
   <head>
     <meta charset='utf-8'>
+    <meta name=”keyword” content="pinyin,排序,汉字,dylan,java">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
@@ -20,7 +21,7 @@
     <header>
       <div class="inner">
         <h1>Chineseandpinyin</h1>
-        <h2>Java版汉字转拼音，支持多样化输出、拼音排序、中英混合排序！Chinese convert to pinyin , Sort by pinyin! </h2>
+        <h2>Java版汉字转拼音工具，支持多样化输出、拼音排序、中英混合排序！Chinese convert to pinyin , Sort by pinyin! </h2>
         <a href="https://github.com/51isunshine/chineseandpinyin" class="button"><small>View project on</small>GitHub</a>
       </div>
     </header>
@@ -31,28 +32,81 @@
           <h1>
 <a name="chinese-to-pinyin" class="anchor" href="#chinese-to-pinyin"><span class="octicon octicon-link"></span></a>chinese To pinyin</h1>
 
-<p>Java版汉字转拼音，支持多样化输出、拼音排序、中英混合排序！<br />
-Basic Introduction:<br />
+<p>Java版汉字转拼音工具，支持多样化输出、拼音排序、中英混合排序！<br />
+简易安装指南:<br />
 <pre><code>
 1. 首先: 安装JDK，最好是1.6.0以上；
 
-2. 其次: 直接下载chinesepinyin-V2.0.0.jar并且把‘libs’的依赖jar加入到classpath中.
+2. 其次: 直接下载chinesepinyin-V2.0.0.jar并且把'libs'的依赖jar加入到classpath中.
 
-3. 再次：如果想自己自动构建，推荐自己ant. 源代码中有ant的build.xml文件.
+3. 再次：如果想自己自动构建，推荐使用ant. 源代码中已有ant的build.xml文件.
 
 4. 最后：祝你使用愉快，如果发现bug，请联系Dylan.zhangzhi@gmail.com
 </code></pre>
   
 </p>
-
+<p></p>Basic Introduction:<br /></p>
 <pre><code>1. First: install JDK 1.6.* or above
 
-2. Second: install Ant 1.6.* or above
+2. Second: Dependence Jar,please see 'libs' folder and add it to your classpath.
 
-3. Dependence Jar,please see 'libs' folder and add it to your classpath.
+3. Third: If you want to build jar by yourself,please install Ant 1.6.* or above first.
+
+4. Last: Welcome to use and report bug, please download it. chinesepinyin-V2.0.0.jar.
 </code></pre>
 
-<p>Now I am very happy that release the version 1.0.0; Following is the main function:</p>
+<p>代码范例</p>
+<pre>
+  <code>
+  ResourceConfig dHelp = ResourceTool.getInstance();
+  ResourceTool resourceTool = ResourceTool.getInstance();
+	Utils utils = Utils.getInstance();
+
+	@Test
+	public void loadResource() {
+		System.out.println(dHelp.loadResource(ResourceType.LOADPINYINMAP));
+	}
+  
+  /** Output: qíng xù shì tiáo hé liú ！  */
+  System.out.println(resourceTool.findSingtonPinYinByHanZi("情绪是条河流！",ResourceType.OutPutStyle.WITHTONE));
+  System.out.println(resourceTool.findSingtonPinYinByHanZi("祖國",ResourceType.OutPutStyle.YUNMU)); //Output:  ǔ uó 
+  
+  /** Output: 12345，sha4ng sha1n da3 la3o hu3 ！ */
+  System.out.println(resourceTool.findSingtonPinYinByHanZi("12345，上山打老虎！", ResourceType.OutPutStyle.NUMBER));
+  
+  Comparator<String> comparator = new PinyinComparator();
+	String[] arr = { "张三", "a","1@","李四","1111111","abc" ,"王二","張三" ,"麻子", "Android", "10086",
+				"@%~*&^#$", "hello world", "A","张大","怡情" };
+        
+	List<String> list=Arrays.asList(arr);
+	Collections.sort(list, comparator);
+  Arrays.sort(arr,comparator);
+	/** Output: 10086 , 1111111 , 1@ , @%~*&^#$ , A , Android , a , abc , hello world , 
+              李四 , 麻子 , 王二 , 怡情 , 张大 , 张三 , 張三 ,  */
+	System.out.println(resourceTool.toStringWith(list," , "));
+	System.out.println(resourceTool.toStringWith(arr," , "));
+  
+  /** Output: kuai */
+  System.out.println(resourceTool.toPinYinWithStringArray('会',Utils.PinYinStyles.COMPLETE)[1]); 
+  /** Output: @ */
+  System.out.println(resourceTool.toPinYinWithString('@',ResourceType.OutPutStyle.WITHTONE,Utils.PinYinStyles.COMPLETE)); 
+	/** Output: huì */
+  System.out.println(resourceTool.toPinYinWithString('会',ResourceType.OutPutStyle.WITHTONE,Utils.PinYinStyles.ONLYCHINEASE)); 
+	/** Output:  */
+  System.out.println(resourceTool.toPinYinWithString(' ',ResourceType.OutPutStyle.WITHTONE,Utils.PinYinStyles.COMPLETE)); 
+	/** Output: null */
+  System.out.println(resourceTool.toPinYinWithString('？',ResourceType.OutPutStyle.WITHTONE,Utils.PinYinStyles.ONLYCHINEASE)); 
+  
+  /** Output: hui   kuai */
+  
+  String[] array = resourceTool.toPinYinWithStringArray('会',Utils.PinYinStyles.ONLYCHINEASE);
+  	for(String temp:array){
+			System.out.print(temp + "   ");
+		}
+  </code>
+</pre>
+
+<p>Now I am very happy that release the version 2.0.0; Following is the main function:</p>
 
 <pre><code>1. Get the pinyin of chinese.
 2. There are five style about output format.
@@ -60,9 +114,13 @@ Basic Introduction:<br />
 4. More information ,please see "MainTest.java" file.
 </code></pre>
 
-<p>Welcome to use and report bug, please download it. chinesepinyin-V2.0.0.jar</p>
 
 <p>To-do-list:</p>
+
+<pre><code>
+1. 实现中文分词.
+2. 进一步扩展拼音库.
+</code></pre>
 
 <pre><code>1. How to Segment the chinese!
 2. Extends the chinese dictionary.
@@ -72,7 +130,7 @@ Basic Introduction:<br />
 
 <p>There are two branchs "master" and "develop". please clone it .
 The master is the stable branch; 
-We work on the develop branch. </p>
+But working on the develop branch. </p>
 
 <p><a href="https://github.com/author" class="user-mention">@author</a> dylan.zhang (<a href="mailto:Dylan.zhangzhi@gmail.com">Dylan.zhangzhi@gmail.com</a>)</p>
 
