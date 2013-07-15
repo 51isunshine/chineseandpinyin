@@ -1,7 +1,19 @@
 chinese To pinyin
 ================
 Java版汉字转拼音，支持多样化输出、拼音排序、中英混合排序！
-Basic Introduction
+
+简易安装指南：
+
+1. 首先: 安装JDK，最好是1.6.0以上.
+
+2. 其次: 直接下载chinesepinyin-V2.0.0.jar并且把‘libs’的依赖jar加入到classpath中.
+
+3. 再次：如果想自己自动构建，推荐自己ant. 源代码中有ant的build.xml文件.
+
+4. 最后：祝你使用愉快，如果发现bug，请联系Dylan.zhangzhi@gmail.com Thanks.
+
+
+Basic Introduction:
 
 	1. First: install JDK 1.6.* or above
 	
@@ -9,7 +21,7 @@ Basic Introduction
 	
 	3. Dependence Jar,please see 'libs' folder and add it to your classpath.
 
-Now I am very happy that release the version 1.0.0; Following is the main function:
+Now I am very happy that release the version 2.0.0; Following is the main function:
 
 	1. Get the pinyin of chinese.
 	2. There are five style about output format.
