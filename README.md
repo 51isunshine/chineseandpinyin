@@ -8,6 +8,8 @@ Basic Introduction
 	1. First: install JDK 1.6.* or above
 	
 	2. Second: install Ant 1.6.* or above
+	
+	3. Dependence Jar,please see 'libs' folder and add it to your classpath.
 
 Now I am very happy that release the version 1.0.0; Following is the main function:
 
