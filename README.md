@@ -1,8 +1,6 @@
-chineseandpinyin
+chinese To pinyin
 ================
-
-I am happy that version 2.0.0 has release.
-
+Java版汉字转拼音，支持多样化输出、拼音排序、中英混合排序！
 Basic Introduction
 
 	1. First: install JDK 1.6.* or above
