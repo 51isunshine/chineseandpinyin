@@ -58,51 +58,49 @@
 <p>代码范例</p>
 <pre>
   <code>
-  ResourceConfig dHelp = ResourceTool.getInstance();
-  ResourceTool resourceTool = ResourceTool.getInstance();
-	Utils utils = Utils.getInstance();
+ResourceConfig dHelp = ResourceTool.getInstance();
+ResourceTool resourceTool = ResourceTool.getInstance();
+Utils utils = Utils.getInstance();
 
-	@Test
-	public void loadResource() {
-		System.out.println(dHelp.loadResource(ResourceType.LOADPINYINMAP));
-	}
+@Test
+public void loadResource() {	System.out.println(dHelp.loadResource(ResourceType.LOADPINYINMAP));}
   
-  /** Output: qíng xù shì tiáo hé liú ！  */
-  System.out.println(resourceTool.findSingtonPinYinByHanZi("情绪是条河流！",ResourceType.OutPutStyle.WITHTONE));
-  System.out.println(resourceTool.findSingtonPinYinByHanZi("祖國",ResourceType.OutPutStyle.YUNMU)); //Output:  ǔ uó 
+/** Output: qíng xù shì tiáo hé liú ！  */
+System.out.println(resourceTool.findSingtonPinYinByHanZi("情绪是条河流！",ResourceType.OutPutStyle.WITHTONE));
+
+System.out.println(resourceTool.findSingtonPinYinByHanZi("祖國",ResourceType.OutPutStyle.YUNMU)); //Output:  ǔ uó 
   
-  /** Output: 12345，sha4ng sha1n da3 la3o hu3 ！ */
-  System.out.println(resourceTool.findSingtonPinYinByHanZi("12345，上山打老虎！", ResourceType.OutPutStyle.NUMBER));
+/** Output: 12345，sha4ng sha1n da3 la3o hu3 ！ */
+System.out.println(resourceTool.findSingtonPinYinByHanZi("12345，上山打老虎！", ResourceType.OutPutStyle.NUMBER));
   
-  Comparator<String> comparator = new PinyinComparator();
-	String[] arr = { "张三", "a","1@","李四","1111111","abc" ,"王二","張三" ,"麻子", "Android", "10086",
+Comparator<String> comparator = new PinyinComparator();
+String[] arr = { "张三", "a","1@","李四","1111111","abc" ,"王二","張三" ,"麻子", "Android", "10086",
 				"@%~*&^#$", "hello world", "A","张大","怡情" };
         
-	List<String> list=Arrays.asList(arr);
-	Collections.sort(list, comparator);
-  Arrays.sort(arr,comparator);
-	/** Output: 10086 , 1111111 , 1@ , @%~*&^#$ , A , Android , a , abc , hello world , 
-              李四 , 麻子 , 王二 , 怡情 , 张大 , 张三 , 張三 ,  */
-	System.out.println(resourceTool.toStringWith(list," , "));
-	System.out.println(resourceTool.toStringWith(arr," , "));
+List<String> list=Arrays.asList(arr);
+Collections.sort(list, comparator);Arrays.sort(arr,comparator);
+
+/** Output: 10086 , 1111111 , 1@ , @%~*&^#$ , A , Android , a , abc , hello world ,  李四 , 麻子 , 王二 , 怡情 , 张大 , 张三 , 張三 ,  */
+System.out.println(resourceTool.toStringWith(list," , "));System.out.println(resourceTool.toStringWith(arr," , "));
   
-  /** Output: kuai */
-  System.out.println(resourceTool.toPinYinWithStringArray('会',Utils.PinYinStyles.COMPLETE)[1]); 
-  /** Output: @ */
-  System.out.println(resourceTool.toPinYinWithString('@',ResourceType.OutPutStyle.WITHTONE,Utils.PinYinStyles.COMPLETE)); 
-	/** Output: huì */
-  System.out.println(resourceTool.toPinYinWithString('会',ResourceType.OutPutStyle.WITHTONE,Utils.PinYinStyles.ONLYCHINEASE)); 
-	/** Output:  */
-  System.out.println(resourceTool.toPinYinWithString(' ',ResourceType.OutPutStyle.WITHTONE,Utils.PinYinStyles.COMPLETE)); 
-	/** Output: null */
-  System.out.println(resourceTool.toPinYinWithString('？',ResourceType.OutPutStyle.WITHTONE,Utils.PinYinStyles.ONLYCHINEASE)); 
+/** Output: kuai */
+System.out.println(resourceTool.toPinYinWithStringArray('会',Utils.PinYinStyles.COMPLETE)[1]); 
+
+/** Output: @ */
+System.out.println(resourceTool.toPinYinWithString('@',ResourceType.OutPutStyle.WITHTONE,Utils.PinYinStyles.COMPLETE)); 
+
+/** Output: huì */
+System.out.println(resourceTool.toPinYinWithString('会',ResourceType.OutPutStyle.WITHTONE,Utils.PinYinStyles.ONLYCHINEASE)); 
+
+/** Output:  */
+System.out.println(resourceTool.toPinYinWithString(' ',ResourceType.OutPutStyle.WITHTONE,Utils.PinYinStyles.COMPLETE)); 
+
+/** Output: null */
+System.out.println(resourceTool.toPinYinWithString('？',ResourceType.OutPutStyle.WITHTONE,Utils.PinYinStyles.ONLYCHINEASE)); 
   
-  /** Output: hui   kuai */
-  
-  String[] array = resourceTool.toPinYinWithStringArray('会',Utils.PinYinStyles.ONLYCHINEASE);
-  	for(String temp:array){
-			System.out.print(temp + "   ");
-		}
+/** Output: hui   kuai */ 
+String[] array = resourceTool.toPinYinWithStringArray('会',Utils.PinYinStyles.ONLYCHINEASE);
+for(String temp:array){System.out.print(temp + "   ");}
   </code>
 </pre>
 
