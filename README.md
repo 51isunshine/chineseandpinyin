@@ -44,4 +44,4 @@ We work on the develop branch.
 @author dylan.zhang (Dylan.zhangzhi@gmail.com)
 
 
-Thanks Google,Thanks <hotoo.cn[AT]gmail.com>,Thanks http://zi.artx.cn/zi/, Thanks the guy who will join me!
+Thanks Google,Thanks hotoo.cn[AT]gmail.com,Thanks http://zi.artx.cn/zi/, Thanks the guy who will join me!
